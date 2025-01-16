@@ -104,7 +104,6 @@ export class ProductsService {
                 files: true,
             },
         });
-        console.log(products);
         return products[0] || null;
     }
 
@@ -137,7 +136,6 @@ export class ProductsService {
             },
         });
 
-        console.log(products);
 
         return products;
     }

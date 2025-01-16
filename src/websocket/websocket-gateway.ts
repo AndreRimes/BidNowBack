@@ -13,8 +13,6 @@ export type BidDto = {
     amount: number;
 }
 
-
-
 @WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: "http://localhost:3000" }, cookie: true, })
 @UseGuards(WebSocketGuard)
 export class BidGateway {
@@ -25,6 +23,16 @@ export class BidGateway {
 
   @WebSocketServer()
   server: Server;
+
+  @SubscribeMessage('joinRoom')
+  handleJoinRoom(
+    @MessageBody() data: { productId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const productRoom = `product_${data.productId}`;
+    console.log(productRoom)
+    client.join(productRoom);
+  } 
 
   @SubscribeMessage('placeBid')
   async handleBid(
@@ -62,7 +70,8 @@ export class BidGateway {
         include: { user: true },
       });
 
-      this.server.emit('bidUpdate', newBid);
+      const productRoom = `product_${bidDto.productId}`;
+      client.to(productRoom).emit('bidUpdate', newBid);
     } catch (error) {
       client.emit('bidError', 'An error occurred while placing the bid');
     }

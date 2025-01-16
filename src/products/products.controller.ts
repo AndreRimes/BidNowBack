@@ -1,19 +1,17 @@
-
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductDto } from './dto/CreateProduct.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { GetUser } from 'src/commons/decorators/get-user.decorator';
+import { ProductDto } from './dto/CreateProduct.dto';
 import { Payload } from 'src/auth/auth.service';
+import { GetUser } from 'src/commons/decorators/get-user.decorator';
 import { Public } from 'src/commons/decorators/public.decorator';
 
 @Controller("products")
 export class ProductsController {
 
-    constructor(
-        private readonly productsService: ProductsService,
-    ) {}
+    constructor(private readonly productsService: ProductsService) { }
 
+    
     @Post()
     @UseInterceptors(FilesInterceptor('files'))
     createProduct(
@@ -24,17 +22,14 @@ export class ProductsController {
         return this.productsService.createProduct(product, files, user.id);
     }
 
-    @Get(":id")
-    getProduct(@Param("id") id: string) {
-        return this.productsService.getProduct(id);
-    }
-
     @Get()
+    @Public()
     getProducts() {
         return this.productsService.getAllProducts();
     }
 
     @Get("all-highlight")
+    @Public()
     getHighlightProducts() {
         return this.productsService.getAllHighlightProducts();
     }
@@ -43,7 +38,6 @@ export class ProductsController {
     getHighlightProduct(){
         return this.productsService.getHighlightProduct();
     }
-
 
     @Get("where-user-bid")
     getProductsWhereUserBid(@GetUser() user: Payload) { 
@@ -55,6 +49,11 @@ export class ProductsController {
         return this.productsService.getMyProducts(user.id);
     }
 
+    @Get(":id")
+    @Public()
+    getProduct(@Param("id") id: string) {
+        return this.productsService.getProduct(id);
+    }
 
 
 }
