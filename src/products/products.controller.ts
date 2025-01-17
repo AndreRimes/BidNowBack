@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Param, Body, UploadedFiles, UseInterceptors, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UploadedFiles, UseInterceptors, Patch, UsePipes, ValidationPipe, Delete } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProductDto } from './dto/CreateProduct.dto';
 import { Payload } from 'src/auth/auth.service';
 import { GetUser } from 'src/commons/decorators/get-user.decorator';
 import { Public } from 'src/commons/decorators/public.decorator';
+import { Status } from '@prisma/client';
+import { FileValidationPipe } from './pipes/File.pipe';
+import { UpdateProductStatusDto } from './dto/UpdateProductStatus.dto';
 
 @Controller("products")
 export class ProductsController {
@@ -14,13 +17,14 @@ export class ProductsController {
     
     @Post()
     @UseInterceptors(FilesInterceptor('files'))
+    @UsePipes(FileValidationPipe)
     createProduct(
         @Body() product: ProductDto,
         @UploadedFiles() files: Express.Multer.File[],
         @GetUser() user: Payload,
     ) {
         return this.productsService.createProduct(product, files, user.id);
-    }
+    } 
 
     @Get()
     @Public()
@@ -48,6 +52,13 @@ export class ProductsController {
     getMyProducts(@GetUser() user: Payload) {
         return this.productsService.getMyProducts(user.id);
     }
+
+    @Patch('/status/:id')
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    updateProductStatus(@Param('id') id: string, @Body() status: UpdateProductStatusDto) {
+        return this.productsService.updateStatus(id, status.status);
+    }
+
 
     @Get(":id")
     @Public()
