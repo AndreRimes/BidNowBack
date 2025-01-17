@@ -36,6 +36,7 @@ model Product {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  status Status @default(ACTIVE)
 
   bids      Bid[]
   files     File[]
@@ -66,6 +67,11 @@ model File {
 
   product   Product  @relation(fields: [productId], references: [id])
   productId String
+}
+
+enum Status {
+  ACTIVE
+  SOLD
 }
 
 

@@ -9,4 +9,11 @@ createdb:
 dropdb:
 	docker exec -it postgres dropdb Bidnow
 
+compose-up:
+	docker-compose up -d
+compose-down:
+	docker-compose down 
+
+	
+
 .PHONY: postgres createdb dropdb

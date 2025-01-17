@@ -18,5 +18,4 @@ export class ProductDto {
   @IsString()
   @IsNotEmpty()
   files: string;
-
 }

@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { WebSocketGuard } from "src/auth/guard/web-socket.guard";
 import { UseGuards } from "@nestjs/common";
 import { AtGuard } from "src/auth/guard/jwt.guard";
+import { Status } from "@prisma/client";
 
 export type BidDto = {
     productId: string;
@@ -30,7 +31,6 @@ export class BidGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const productRoom = `product_${data.productId}`;
-    console.log(productRoom)
     client.join(productRoom);
   } 
 
@@ -45,6 +45,11 @@ export class BidGateway {
         where: { id: bidDto.productId },
         include: { bids: true },
       });
+
+      if (product.status !== Status.ACTIVE) {
+        client.emit('bidError', 'Product is not active');
+        return;
+      }
 
       if (!product) {
         client.emit('bidError', 'Product not found');
