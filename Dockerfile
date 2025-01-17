@@ -27,8 +27,8 @@ COPY --from=builder --chown=node:node /home/node/package*.json ./
 COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
 COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
 
-EXPOSE 8080
+EXPOSE 8081
 
-ENV PORT 8080
+ENV PORT 8081
 
 CMD ["sh", "-c", "npx prisma migrate deploy --schema=./prisma/schema.prisma && npm run start:prod"]
