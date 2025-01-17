@@ -1,5 +1,6 @@
-import { ProductsController} from './products/products.controller';
-import { ProcutsService } from './products/products.service';
+import { WebsocketModule } from './websocket/websocket.module';
+import { ProductsController } from './products/products.controller';
+import { ProductsService } from './products/products.service';
 import { ProductsModule } from './products/products.module';
 import { S3Module } from './s3/s3.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -14,6 +15,7 @@ import { AtGuard } from './auth/guard/jwt.guard';
 
 @Module({
   imports: [
+    WebsocketModule,
     ProductsModule,
     S3Module,
     PrismaModule,
@@ -22,7 +24,7 @@ import { AtGuard } from './auth/guard/jwt.guard';
   controllers: [
     ProductsController, AppController],
   providers: [
-    ProcutsService,
+    ProductsService,
     PrismaService, AppService,
 
     { provide: APP_GUARD, useClass: AtGuard },
