@@ -58,6 +58,7 @@ export class ProductsService {
                 id,
             },
             include: {
+                user: true,
                 bids: {
                     include: {
                         user: true,
@@ -136,8 +137,45 @@ export class ProductsService {
             },
         });
 
-
         return products;
+    }
+
+    async deleteProduct(id: string, userId: string) {
+        return this.prisma.$transaction(async (transaction) => {
+            const product = await transaction.product.findUniqueOrThrow({
+                where: {
+                    id,
+                },
+            });
+
+            if (!product) {
+                throw new Error('Product not found');
+            }
+
+            if (product.userId !== userId) {
+                throw new Error('You are not the owner of this product');
+            }
+
+            await transaction.file.deleteMany({
+                where: {
+                    productId: id,
+                },
+            });
+
+            await transaction.bid.deleteMany({
+                where: {
+                    productId: id,
+                },
+            });
+
+            await transaction.product.delete({
+                where: {
+                    id,
+                },
+            });
+
+            return product;
+        })
     }
 
 }

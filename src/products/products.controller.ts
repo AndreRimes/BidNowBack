@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UploadedFiles, UseInterceptors, Delete } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProductDto } from './dto/CreateProduct.dto';
@@ -53,6 +53,11 @@ export class ProductsController {
     @Public()
     getProduct(@Param("id") id: string) {
         return this.productsService.getProduct(id);
+    }
+
+    @Delete(":id")
+    deleteProduct(@Param("id") id: string, @GetUser() user: Payload) {
+        return this.productsService.deleteProduct(id, user.id);
     }
 
 
