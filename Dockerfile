@@ -31,4 +31,4 @@ EXPOSE 8081
 
 ENV PORT 8081
 
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=./prisma/schema.prisma && npm run start:prod"]
+CMD ["sh", "-c", "npm run start:prod"]
