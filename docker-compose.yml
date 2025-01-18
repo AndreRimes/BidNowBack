@@ -34,6 +34,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     ports:
       - "8081:8081"
+      - "3334:3334"
     depends_on:
       postgres:
         condition: service_healthy 

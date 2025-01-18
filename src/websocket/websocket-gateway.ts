@@ -14,7 +14,7 @@ export type BidDto = {
     amount: number;
 }
 
-@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: "http://localhost:3000" }, cookie: true, })
+@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: process.env.NODE_ENV === 'production' ? "https://bidnow.andrerimes.com" : "http://localhost:3000" }, cookie: true, })
 @UseGuards(WebSocketGuard)
 export class BidGateway {
     constructor(
