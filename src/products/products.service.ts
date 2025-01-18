@@ -44,6 +44,29 @@ export class ProductsService {
                 })
             });
 
+            if (product.tags && product.tags.length > 0) {
+                const existingTags = await transaction.tag.findMany({
+                    where: {
+                        name: {
+                            in: product.tags,
+                        },
+                    },
+                });
+
+                if (existingTags.length !== product.tags.length) {
+                    throw new Error('Some tags do not exist');
+                }
+    
+                await transaction.product.update({
+                    where: { id: productData.id },
+                    data: {
+                        tags: {
+                            connect: existingTags.map((tag) => ({ id: tag.id })),
+                        },
+                    },
+                });
+            }
+
             return {
                 ...productData,
                 files: filesData,
@@ -132,7 +155,9 @@ export class ProductsService {
                 },
             },
             include: {
-                bids: true,
+                bids: {
+                    include: {user: true},
+                },
                 files: true,
             },
         });

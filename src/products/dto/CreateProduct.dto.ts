@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ProductDto {
@@ -19,4 +19,8 @@ export class ProductDto {
   @IsNotEmpty()
   files: string;
 
+  @IsArray()
+  @IsOptional() 
+  @IsString({ each: true }) 
+  tags?: string[]; 
 }
