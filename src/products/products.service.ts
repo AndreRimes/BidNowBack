@@ -88,6 +88,7 @@ export class ProductsService {
                     },
                 },
                 files: true,
+                tags: true,
             },
         })
     }
@@ -203,4 +204,31 @@ export class ProductsService {
         })
     }
 
+    async getProductTags(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { tags: true },
+        });
+    
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+    
+        const userTagIds = user.tags.map((tag) => tag.id); 
+    
+        const products = await this.prisma.product.findMany({
+            where: {
+                tags: {
+                    some: { id: { in: userTagIds } }, 
+                },
+            },
+            include: {
+                tags: true,
+                bids: true, 
+                files: true,
+            },
+        });
+        return products;
+    }
+    
 }
