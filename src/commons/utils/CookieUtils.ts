@@ -23,9 +23,9 @@ export const CookieUtils = {
         maxAge: maxAge * 1000, // convert to milliseconds
         path: '/',
         domain:
-          process.env.NODE_ENV === 'production' ? 'selosocial.com' : undefined,
-        secure: process.env.NODE_ENV === 'production', // only with https
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : undefined,
+        undefined,
+        secure: false, // only with https
+        sameSite: undefined,
       })
     })
   },
