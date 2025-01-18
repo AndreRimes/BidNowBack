@@ -13,9 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Debug ssh
-        run 
-
       - name: Set up ssh
         run: |
           mkdir -p ~/.ssh
