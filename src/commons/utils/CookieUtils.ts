@@ -22,10 +22,9 @@ export const CookieUtils = {
         httpOnly: true, // will not allow client-side JavaScript to see the cookie
         maxAge: maxAge * 1000, // convert to milliseconds
         path: '/',
-        domain:
-        undefined,
-        secure: false, // only with https
-        sameSite: undefined,
+        domain: process.env.NODE_ENV === 'production' ? 'bidnow.andrerimes.com' : undefined,
+        secure: process.env.NODE_ENV === 'production', // only with https
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : undefined,
       })
     })
   },

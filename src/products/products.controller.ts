@@ -17,12 +17,13 @@ export class ProductsController {
     
     @Post()
     @UseInterceptors(FilesInterceptor('files'))
-    @UsePipes(FileValidationPipe)
+    // @UsePipes(FileValidationPipe)
     createProduct(
         @Body() product: ProductDto,
         @UploadedFiles() files: Express.Multer.File[],
         @GetUser() user: Payload,
     ) {
+        
         return this.productsService.createProduct(product, files, user.id);
     } 
 
