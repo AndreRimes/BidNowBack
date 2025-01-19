@@ -1,19 +1,19 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Payload } from "src/auth/auth.service";
-import { GetUser } from "src/commons/decorators/get-user.decorator";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Socket, Server } from 'socket.io';
 import { JwtService } from "@nestjs/jwt";
 import { WebSocketGuard } from "src/auth/guard/web-socket.guard";
 import { UseGuards } from "@nestjs/common";
 import { AtGuard } from "src/auth/guard/jwt.guard";
+import { Status } from "@prisma/client";
 
 export type BidDto = {
     productId: string;
     amount: number;
 }
 
-@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: "http://localhost:3000" }, cookie: true, })
+@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: true }, cookie: true, namespace: "/ws" })
 @UseGuards(WebSocketGuard)
 export class BidGateway {
     constructor(
@@ -30,7 +30,6 @@ export class BidGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const productRoom = `product_${data.productId}`;
-    console.log(productRoom)
     client.join(productRoom);
   } 
 
@@ -45,6 +44,11 @@ export class BidGateway {
         where: { id: bidDto.productId },
         include: { bids: true },
       });
+
+      if (product.status !== Status.ACTIVE) {
+        client.emit('bidError', 'Product is not active');
+        return;
+      }
 
       if (!product) {
         client.emit('bidError', 'Product not found');

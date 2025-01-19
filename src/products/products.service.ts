@@ -1,11 +1,20 @@
-/*
-https://docs.nestjs.com/providers#services
-*/
-
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductDto } from './dto/CreateProduct.dto';
 import { S3Service } from 'src/s3/s3.service';
+import { Status } from '@prisma/client';
+
+
+const defaultInclude = {
+    bids: {
+        include: {
+            user: true,
+        },
+    },
+    files: true,
+    user: true,
+    tags: true,
+};
 
 
 @Injectable()
@@ -80,16 +89,7 @@ export class ProductsService {
             where: {
                 id,
             },
-            include: {
-                user: true,
-                bids: {
-                    include: {
-                        user: true,
-                    },
-                },
-                files: true,
-                tags: true,
-            },
+            include: defaultInclude,
         })
     }
 
@@ -99,20 +99,17 @@ export class ProductsService {
             where: {
                 userId,
             },
-            include: {
-                bids: true,
-                files: true,
-            },
+            include: defaultInclude,
         })
     }
 
 
     async getAllProducts() {
         return await this.prisma.product.findMany({
-            include: {
-                bids: true,
-                files: true,
-            }
+            where:{
+                status: Status.ACTIVE,
+            },
+            include: defaultInclude,
         })
     }
 
@@ -124,10 +121,10 @@ export class ProductsService {
                     _count: 'desc',
                 },
             },
-            include: {
-                bids: true,
-                files: true,
+            where: {
+                status: Status.ACTIVE,
             },
+            include: defaultInclude,
         });
         return products[0] || null;
     }
@@ -139,10 +136,10 @@ export class ProductsService {
                     _count: 'desc',
                 },
             },
-            include: {
-                bids: true,
-                files: true,
-            }
+            where: {
+                status: Status.ACTIVE,
+            },
+            include: defaultInclude
         }) 
     }
 
@@ -155,17 +152,23 @@ export class ProductsService {
                     },
                 },
             },
-            include: {
-                bids: {
-                    include: {user: true},
-                },
-                files: true,
-            },
+            include: defaultInclude,
         });
 
         return products;
     }
 
+    async updateStatus(productId: string, status: Status) {
+        return await this.prisma.product.update({
+            where: {
+                id: productId,
+            },
+            data: {
+                status: status,
+            },
+        });
+    }
+ 
     async deleteProduct(id: string, userId: string) {
         return this.prisma.$transaction(async (transaction) => {
             const product = await transaction.product.findUniqueOrThrow({
@@ -222,11 +225,7 @@ export class ProductsService {
                     some: { id: { in: userTagIds } }, 
                 },
             },
-            include: {
-                tags: true,
-                bids: true, 
-                files: true,
-            },
+            include: defaultInclude
         });
         return products;
     }

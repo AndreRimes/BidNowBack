@@ -37,6 +37,7 @@ model Product {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  status Status @default(ACTIVE)
 
   bids      Bid[]
   files     File[]
@@ -79,6 +80,11 @@ model Tag{
   users     User[]
 }
 
+
+enum Status {
+  ACTIVE
+  SOLD
+}
 
 
 

@@ -19,14 +19,13 @@ export const CookieUtils = {
   ): void {
     Object.entries(payload).map(([key, value]) => {
       res.cookie(key, value, {
-        httpOnly: true, // will not allow client-side JavaScript to see the cookie
-        maxAge: maxAge * 1000, // convert to milliseconds
+        httpOnly: true,
+        maxAge: maxAge * 1000,
         path: '/',
-        domain:
-          process.env.NODE_ENV === 'production' ? 'selosocial.com' : undefined,
-        secure: process.env.NODE_ENV === 'production', // only with https
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : undefined,
-      })
+        domain: process.env.NODE_ENV === 'production' ? '.andrerimes.com' : undefined,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    });
     })
   },
 
