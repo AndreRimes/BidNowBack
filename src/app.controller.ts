@@ -15,6 +15,7 @@ export class AppController {
 
 
   @Get('seed')
+  @Public()
   seed() {
     return this.appService.seed();
   }
