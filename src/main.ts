@@ -12,7 +12,6 @@ async function bootstrap() {
     origin: true,
     credentials: true,
     allowedHeaders: '*',
-    methods: '*',
     exposedHeaders: '*',
   }));
 
