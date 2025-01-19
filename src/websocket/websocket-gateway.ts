@@ -13,7 +13,7 @@ export type BidDto = {
     amount: number;
 }
 
-@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: true }, cookie: true, })
+@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: true }, cookie: true, namespace: "/ws" })
 @UseGuards(WebSocketGuard)
 export class BidGateway {
     constructor(
