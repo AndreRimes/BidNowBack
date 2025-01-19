@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.use(cors({
-    origin: true, 
+    origin: process.env.NODE_ENV === "production" ? "https://bidnow.andrerimes.com" : true,
     credentials: true,
   }));
 
