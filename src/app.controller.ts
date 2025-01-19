@@ -12,4 +12,10 @@ export class AppController {
     return "AAAAAAAAAAAAAAA"
     // return this.appService.getHello();
   }
+
+
+  @Get('seed')
+  seed() {
+    return this.appService.seed();
+  }
 }
