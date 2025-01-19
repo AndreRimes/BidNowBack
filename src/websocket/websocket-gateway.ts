@@ -1,6 +1,5 @@
 import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Payload } from "src/auth/auth.service";
-import { GetUser } from "src/commons/decorators/get-user.decorator";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Socket, Server } from 'socket.io';
 import { JwtService } from "@nestjs/jwt";
@@ -14,7 +13,7 @@ export type BidDto = {
     amount: number;
 }
 
-@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: process.env.NODE_ENV === 'production' ? "https://bidnow.andrerimes.com" : "http://localhost:3000" }, cookie: true, })
+@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: true }, cookie: true, })
 @UseGuards(WebSocketGuard)
 export class BidGateway {
     constructor(
