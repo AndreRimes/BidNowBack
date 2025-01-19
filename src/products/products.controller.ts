@@ -53,6 +53,11 @@ export class ProductsController {
     getMyProducts(@GetUser() user: Payload) {
         return this.productsService.getMyProducts(user.id);
     }
+    
+    @Get("tags")
+        getProductTags(@GetUser() user: Payload) {
+            return this.productsService.getProductTags(user.id);
+        }
 
     @Patch('/status/:id')
     @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -67,6 +72,7 @@ export class ProductsController {
         return this.productsService.getProduct(id);
     }
 
+    
     @Delete(":id")
     deleteProduct(@Param("id") id: string, @GetUser() user: Payload) {
         return this.productsService.deleteProduct(id, user.id);

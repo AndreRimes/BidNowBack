@@ -13,6 +13,7 @@ const defaultInclude = {
     },
     files: true,
     user: true,
+    tags: true,
 };
 
 
@@ -51,6 +52,29 @@ export class ProductsService {
 
                 })
             });
+
+            if (product.tags && product.tags.length > 0) {
+                const existingTags = await transaction.tag.findMany({
+                    where: {
+                        name: {
+                            in: product.tags,
+                        },
+                    },
+                });
+
+                if (existingTags.length !== product.tags.length) {
+                    throw new Error('Some tags do not exist');
+                }
+    
+                await transaction.product.update({
+                    where: { id: productData.id },
+                    data: {
+                        tags: {
+                            connect: existingTags.map((tag) => ({ id: tag.id })),
+                        },
+                    },
+                });
+            }
 
             return {
                 ...productData,
@@ -128,7 +152,7 @@ export class ProductsService {
                     },
                 },
             },
-            include: defaultInclude
+            include: defaultInclude,
         });
 
         return products;
@@ -183,4 +207,27 @@ export class ProductsService {
         })
     }
 
+    async getProductTags(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { tags: true },
+        });
+    
+        if (!user) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+    
+        const userTagIds = user.tags.map((tag) => tag.id); 
+    
+        const products = await this.prisma.product.findMany({
+            where: {
+                tags: {
+                    some: { id: { in: userTagIds } }, 
+                },
+            },
+            include: defaultInclude
+        });
+        return products;
+    }
+    
 }
