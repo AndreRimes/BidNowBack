@@ -8,7 +8,10 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  app.enableCors();
+  app.enableCors({
+    origin: 'https://bidnow.andrerimes.com',
+    credentials: true
+  });
 
   // app.useGlobalPipes(new ValidationPipe({
   //   whitelist: true,
