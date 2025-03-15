@@ -28,7 +28,7 @@ jobs:
           sudo nerdctl build -t andrerimes/bidnow-back:latest . &&
           sudo nerdctl push andrerimes/bidnow-back:latest &&
           kubectl rollout restart deployment bidnow-backend -n bidnow-namespace &&
-          kubectl rollout status deployment bidnow-deployment -n bidnow-namespace
+          kubectl rollout status deployment bidnow-backend -n bidnow-namespace
           "
 
       - name: Run migration
