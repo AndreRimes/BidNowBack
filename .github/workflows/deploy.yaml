@@ -24,7 +24,16 @@ jobs:
         run: |
           ssh -v ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
           cd /home/andre/BidNowBack &&
-          git pull &&
-          sudo docker compose down nestjs &&
-          sudo docker compose build nestjs &&
-          sudo docker compose up -d nestjs"
+          git pull origin main &&
+          sudo nerdctl build -t andrerimes/bidnow-back:latest . &&
+          sudo nerdctl push andrerimes/bidnow-back:latest &&
+          kubectl rollout restart deployment bidnow-backend -n bidnow-namespace &&
+          kubectl rollout status deployment bidnow-deployment -n bidnow-namespace
+          "
+
+      - name: Run migration
+        run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          kubectl create job --from=cronjob/prisma-migrate-job prisma-migrate-$(date +%s) -n bidnow-namespace
+          "
+
