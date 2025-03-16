@@ -1,5 +1,4 @@
-version: '2.32.4'
-
+version: '3.8'
 services:
   postgres:
     image: postgres:14-alpine
@@ -40,6 +39,33 @@ services:
         condition: service_healthy 
     networks:
       - app-network
+
+  nestjs-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: nestjs-dev
+    environment:
+      DATABASE_URL: "postgresql://root:secret@postgres:5432/Bidnow?sslmode=disable"
+      NODE_ENV: development
+      AWS_REGION: sa-east-1
+      AWS_S3_BUCKET: andrerimes
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    ports:
+      - "8081:8081"
+      - "3334:3334"
+    volumes:
+      - .:/home/node/app
+      - /home/node/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy 
+    networks:
+      - app-network
+    command: npm run start:dev
+    stdin_open: true
+    tty: true
 
 volumes:
   postgres_data:

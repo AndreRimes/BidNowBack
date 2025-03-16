@@ -9,8 +9,9 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'https://bidnow.andrerimes.com',
-    credentials: true
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', "OPTIONS"],
   });
 
   // app.useGlobalPipes(new ValidationPipe({

@@ -22,10 +22,10 @@ export const CookieUtils = {
         httpOnly: true,
         maxAge: maxAge * 1000,
         path: '/',
-        domain: process.env.NODE_ENV === 'production' ? '.andrerimes.com' : undefined,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    });
+        domain: undefined, 
+        secure: true,
+        sameSite: 'none',
+      });
     })
   },
 
