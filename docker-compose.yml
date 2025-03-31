@@ -55,6 +55,7 @@ services:
     ports:
       - "8081:8081"
       - "3334:3334"
+      - "5555:5555"
     volumes:
       - .:/home/node/app
       - /home/node/app/node_modules

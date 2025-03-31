@@ -13,8 +13,8 @@ export class UserController {
 
     @Post()
     @Public()
-    createUser(@Body() user: UserDto) {
-        return this.userService.createUser(user);
+    async createUser(@Body() user: UserDto) {
+        return await this.userService.createUser(user);
     }
 
     @Get('/tags')

@@ -22,9 +22,9 @@ export const CookieUtils = {
         httpOnly: true,
         maxAge: maxAge * 1000,
         path: '/',
-        domain: undefined, 
+        domain: '.andrerimes.com',
         secure: true,
-        sameSite: 'none',
+        sameSite: 'strict',
       });
     })
   },

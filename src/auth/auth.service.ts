@@ -49,12 +49,14 @@ export class AuthService {
             },
         })
 
-        const isValid = await bcrypt.compare(user.password, findUser.password);
+        const isValid = user.password === findUser.password;
+
 
         if(!isValid) {
             throw new UnauthorizedException();
         }
 
+        console.log(findUser)
         return findUser;
     }
     

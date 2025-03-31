@@ -19,6 +19,8 @@ export class AuthController {
     ) {
         const {backendTokens, user: userFromDb} = await this.authService.login(user);
         this.authService.setAuthCookies(res, backendTokens);
+        console.log(backendTokens)
+
         
         return user;
     }

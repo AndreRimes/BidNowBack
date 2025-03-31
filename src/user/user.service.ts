@@ -9,11 +9,10 @@ export class UserService {
     constructor(private readonly prisma: PrismaService) {}
 
     async createUser(user: UserDto) {
-        const hash = await bcrypt.hash(user.password, 10);
-        return this.prisma.user.create({
+        return await this.prisma.user.create({
             data: {
                 email: user.email,
-                password: hash,
+                password: user.password,
                 name: user.name,
             }
         })
