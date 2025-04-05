@@ -9,10 +9,9 @@ export class AppController {
   @Get()
   @Public()
   getHello(): string {
-    return "AAAAAAAAAAAAAAA"
+    return 'AAAAAAAAAAAAAAA';
     // return this.appService.getHello();
   }
-
 
   @Get('seed')
   @Public()

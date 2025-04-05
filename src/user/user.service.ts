@@ -5,55 +5,55 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
+  constructor(private readonly prisma: PrismaService) {}
 
-    constructor(private readonly prisma: PrismaService) {}
+  async createUser(user: UserDto) {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    async createUser(user: UserDto) {
-        return await this.prisma.user.create({
-            data: {
-                email: user.email,
-                password: user.password,
-                name: user.name,
-            }
-        })
+    return await this.prisma.user.create({
+      data: {
+        email: user.email,
+        password: hashedPassword,
+        name: user.name,
+      },
+    });
+  }
+
+  async findUserTags(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { tags: true },
+    });
+    return user.tags;
+  }
+
+  async updateUserTags(userId, tagIds) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found.`);
     }
 
-    async findUserTags(userId: string) {
-        const user = await this.prisma.user.findUnique({
-            where: { id: userId },
-            include: { tags: true },
-        });
-        return user.tags;
+    const tags = await this.prisma.tag.findMany({
+      where: { id: { in: tagIds } },
+    });
+
+    if (tags.length !== tagIds.length) {
+      throw new Error('One or more tags do not exist.');
     }
 
-    async updateUserTags(userId, tagIds) {
-          const user = await this.prisma.user.findUnique({
-            where: { id: userId },
-          });
-      
-          if (!user) {
-            throw new Error(`User with ID ${userId} not found.`);
-          }
-      
-          const tags = await this.prisma.tag.findMany({
-            where: { id: { in: tagIds } },
-          });
-      
-          if (tags.length !== tagIds.length) {
-            throw new Error("One or more tags do not exist.");
-          }
-      
-          await this.prisma.user.update({
-            where: { id: userId },
-            data: {
-              tags: {
-                set: [], 
-                connect: tagIds.map((tagId) => ({ id: tagId })), 
-              },
-            },
-          });
-      
-          console.log(`Tags successfully updated for user with ID ${userId}`);
-        }    
-      
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        tags: {
+          set: [],
+          connect: tagIds.map((tagId) => ({ id: tagId })),
+        },
+      },
+    });
+
+    console.log(`Tags successfully updated for user with ID ${userId}`);
+  }
 }

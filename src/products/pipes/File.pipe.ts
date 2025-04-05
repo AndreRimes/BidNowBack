@@ -7,13 +7,13 @@ export class FileValidationPipe implements PipeTransform {
       throw new BadRequestException('No files uploaded');
     }
 
-    console.log("FILES: ", files);
+    console.log('FILES: ', files);
 
     if (!Array.isArray(files)) {
       files = [files];
     }
-    
-    files.forEach(file => {
+
+    files.forEach((file) => {
       if (!file.mimetype) {
         throw new BadRequestException('File type is missing');
       }

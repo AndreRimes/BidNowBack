@@ -1,12 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
-import { Reflector } from '@nestjs/core'
-import { AuthGuard } from '@nestjs/passport'
-import { Observable } from 'rxjs'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AtGuard extends AuthGuard('jwt') implements CanActivate {
   constructor(private reflector: Reflector) {
-    super()
+    super();
   }
 
   canActivate(
@@ -15,11 +15,10 @@ export class AtGuard extends AuthGuard('jwt') implements CanActivate {
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
       context.getHandler(),
       context.getClass(),
-    ])
+    ]);
 
-    if (isPublic) return true
+    if (isPublic) return true;
 
-  
-    return super.canActivate(context)
+    return super.canActivate(context);
   }
 }

@@ -24,14 +24,16 @@ import { TagsModule } from './tags/tags.module';
     PrismaModule,
     AuthModule,
     UserModule,
-    TagsModule,],
-  controllers: [
-    ProductsController, AppController, TagsController,],
+    TagsModule,
+  ],
+  controllers: [ProductsController, AppController, TagsController],
   providers: [
-    ProductsService, TagsService,
-    PrismaService, AppService,
+    ProductsService,
+    TagsService,
+    PrismaService,
+    AppService,
 
     { provide: APP_GUARD, useClass: AtGuard },
   ],
 })
-export class AppModule { }
+export class AppModule {}

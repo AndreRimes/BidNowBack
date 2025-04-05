@@ -3,13 +3,11 @@ import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
 export class AppService {
-
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   getHello(): string {
     return 'Hello World!';
   }
-
 
   async seed() {
     const tags = [
@@ -26,10 +24,10 @@ export class AppService {
       { name: 'Esporte e Acessórios' },
       { name: 'Esporte' },
     ];
-  
+
     await this.prisma.tag.createMany({
       data: tags,
-      skipDuplicates: true, 
+      skipDuplicates: true,
     });
   }
 }

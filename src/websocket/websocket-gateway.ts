@@ -1,25 +1,35 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Payload } from "src/auth/auth.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import { Payload } from 'src/auth/auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Socket, Server } from 'socket.io';
-import { JwtService } from "@nestjs/jwt";
-import { WebSocketGuard } from "src/auth/guard/web-socket.guard";
-import { UseGuards } from "@nestjs/common";
-import { AtGuard } from "src/auth/guard/jwt.guard";
-import { Status } from "@prisma/client";
+import { JwtService } from '@nestjs/jwt';
+import { WebSocketGuard } from 'src/auth/guard/web-socket.guard';
+import { UseGuards } from '@nestjs/common';
+import { AtGuard } from 'src/auth/guard/jwt.guard';
+import { Status } from '@prisma/client';
 
 export type BidDto = {
-    productId: string;
-    amount: number;
-}
+  productId: string;
+  amount: number;
+};
 
-@WebSocketGateway(3334, { cors: { credentials: true, allowedHeaders: true, origin: true }, cookie: true, namespace: "/ws" })
+@WebSocketGateway(3334, {
+  cors: { credentials: true, allowedHeaders: true, origin: true },
+  cookie: true,
+  namespace: '/ws',
+})
 @UseGuards(WebSocketGuard)
 export class BidGateway {
-    constructor(
-        private readonly prisma: PrismaService,
-        private readonly jwtService: JwtService,
-    ) { }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -31,14 +41,14 @@ export class BidGateway {
   ) {
     const productRoom = `product_${data.productId}`;
     client.join(productRoom);
-  } 
+  }
 
   @SubscribeMessage('placeBid')
   async handleBid(
     @MessageBody() bidDto: BidDto,
     @ConnectedSocket() client: Socket,
   ) {
-    const user = client["user"] as Payload;
+    const user = client['user'] as Payload;
     try {
       const product = await this.prisma.product.findUnique({
         where: { id: bidDto.productId },
@@ -57,7 +67,7 @@ export class BidGateway {
 
       const currentMaxBid = product.bids.reduce(
         (max, bid) => (bid.amount > max ? bid.amount : max),
-        product.minimalPrice
+        product.minimalPrice,
       );
 
       if (bidDto.amount <= currentMaxBid) {

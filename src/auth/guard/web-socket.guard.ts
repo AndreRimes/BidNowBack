@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
 
@@ -9,12 +14,15 @@ export class WebSocketGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client: Socket = context.switchToWs().getClient();
     const cookie = client.handshake.headers.cookie;
-    
+
     if (!cookie) {
       throw new UnauthorizedException('No cookies found');
     }
 
-    const accessToken = cookie.split(';').map(cookie => cookie.trim()).find(cookie => cookie.startsWith('accessToken='));
+    const accessToken = cookie
+      .split(';')
+      .map((cookie) => cookie.trim())
+      .find((cookie) => cookie.startsWith('accessToken='));
     if (!accessToken) {
       throw new UnauthorizedException('Access token not found');
     }

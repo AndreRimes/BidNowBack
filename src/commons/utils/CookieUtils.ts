@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response } from 'express';
 
 /**
  * Cookie utils
@@ -26,7 +26,7 @@ export const CookieUtils = {
         secure: true,
         sameSite: 'strict',
       });
-    })
+    });
   },
 
   /**
@@ -36,7 +36,7 @@ export const CookieUtils = {
    * @returns Value of the cookie
    */
   getCookieValue(req: Request, key: string): string {
-    const cookie = req.cookies[key]
+    const cookie = req.cookies[key];
     return cookie;
   },
 
@@ -46,6 +46,6 @@ export const CookieUtils = {
    * @param key Key of the cookie
    */
   clearCookie(res: Response, key: string): void {
-    res.clearCookie(key)
+    res.clearCookie(key);
   },
-}
+};

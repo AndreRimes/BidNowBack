@@ -1,20 +1,17 @@
-import { IsArray, IsOptional, IsString } from "class-validator";
-
-
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class UserDto {
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string;
+  @IsString()
+  email: string;
 
-    @IsString()
-    email: string;
+  @IsString()
+  password: string;
 
-    @IsString()
-    password: string;
-    
-    @IsArray()
-    @IsOptional() 
-    @IsString({ each: true }) 
-    tags?: string[]; 
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  tags?: string[];
 }

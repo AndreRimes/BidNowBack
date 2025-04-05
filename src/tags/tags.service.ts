@@ -3,12 +3,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TagsService {
-    constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-    async findAll() {
-        return this.prisma.tag.findMany(); 
-    }
-
-    
-      
+  async findAll() {
+    return this.prisma.tag.findMany();
+  }
 }

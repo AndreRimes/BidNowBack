@@ -3,12 +3,10 @@ import { TagsService } from './tags.service';
 
 @Controller('tags')
 export class TagsController {
-    constructor(private readonly tagsService: TagsService) {}
+  constructor(private readonly tagsService: TagsService) {}
 
-    @Get()
-    async getTags() {
-        return await this.tagsService.findAll(); 
-    }
-
-    
+  @Get()
+  async getTags() {
+    return await this.tagsService.findAll();
+  }
 }
