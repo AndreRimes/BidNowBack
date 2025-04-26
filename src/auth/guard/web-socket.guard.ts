@@ -34,7 +34,7 @@ export class WebSocketGuard implements CanActivate {
       client['user'] = decoded;
       return true;
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid token', error);
     }
   }
 }

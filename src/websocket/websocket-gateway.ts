@@ -11,7 +11,6 @@ import { Socket, Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { WebSocketGuard } from 'src/auth/guard/web-socket.guard';
 import { UseGuards } from '@nestjs/common';
-import { AtGuard } from 'src/auth/guard/jwt.guard';
 import { Status } from '@prisma/client';
 
 export type BidDto = {
@@ -87,7 +86,7 @@ export class BidGateway {
       const productRoom = `product_${bidDto.productId}`;
       client.to(productRoom).emit('bidUpdate', newBid);
     } catch (error) {
-      client.emit('bidError', 'An error occurred while placing the bid');
+      client.emit('bidError', 'An error occurred while placing the bid', error);
     }
   }
 }

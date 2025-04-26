@@ -16,8 +16,7 @@ export class AuthController {
     @Body() user: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { backendTokens, user: userFromDb } =
-      await this.authService.login(user);
+    const { backendTokens } = await this.authService.login(user);
     this.authService.setAuthCookies(res, backendTokens);
     console.log(backendTokens);
 
@@ -37,8 +36,7 @@ export class AuthController {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
-    const { backendTokens, user: newUser } =
-      await this.authService.createTokens(odlUser);
+    const { backendTokens } = await this.authService.createTokens(odlUser);
     this.authService.setAuthCookies(res, backendTokens);
     return user;
   }

@@ -203,7 +203,9 @@ export class ProductsService {
   }
 
   async getRecomendations(userId: string) {
-    const { data } = await axios.get(`${ process.env.RECOMMENDATION_MICROSERVICE_URL}/${userId}`);
+    const { data } = await axios.get(
+      `${process.env.RECOMMENDATION_MICROSERVICE_URL}/${userId}`,
+    );
     const recommendedTags = data.recommendations.map((tag) => tag.id);
 
     return await this.prisma.product.findMany({
@@ -217,11 +219,11 @@ export class ProductsService {
         },
         status: Status.ACTIVE,
         userId: {
-          not: userId, 
+          not: userId,
         },
         bids: {
           none: {
-            userId: userId, 
+            userId: userId,
           },
         },
       },
