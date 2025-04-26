@@ -60,15 +60,28 @@ export class ProductsService {
           },
         });
 
-        if (existingTags.length !== product.tags.length) {
-          throw new Error('Some tags do not exist');
+        const existingTagNames = existingTags.map((tag) => tag.name);
+        const missingTagNames = product.tags.filter(
+          (tag) => !existingTagNames.includes(tag),
+        );
+
+        let newTags = [];
+        if (missingTagNames.length > 0) {
+          newTags = await Promise.all(
+            missingTagNames.map((tagName) =>
+              transaction.tag.create({ data: { name: tagName } }),
+            ),
+          );
         }
+
+        // Connect all tags (existing + new)
+        const allTags = [...existingTags, ...newTags];
 
         await transaction.product.update({
           where: { id: productData.id },
           data: {
             tags: {
-              connect: existingTags.map((tag) => ({ id: tag.id })),
+              connect: allTags.map((tag) => ({ id: tag.id })),
             },
           },
         });
