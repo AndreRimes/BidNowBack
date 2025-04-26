@@ -22,7 +22,6 @@ model User {
 
   products  Product[]
   bids      Bid[]
-  tags      Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,7 +76,6 @@ model Tag{
   name      String   @unique
 
   products  Product[]
-  users     User[]
 }
 
 

@@ -17,8 +17,7 @@ import { ProductDto } from './dto/CreateProduct.dto';
 import { Payload } from 'src/auth/auth.service';
 import { GetUser } from 'src/commons/decorators/get-user.decorator';
 import { Public } from 'src/commons/decorators/public.decorator';
-import { Status } from '@prisma/client';
-import { FileValidationPipe } from './pipes/File.pipe';
+
 import { UpdateProductStatusDto } from './dto/UpdateProductStatus.dto';
 
 @Controller('products')
@@ -63,9 +62,9 @@ export class ProductsController {
     return this.productsService.getMyProducts(user.id);
   }
 
-  @Get('tags')
+  @Get('recommendations')
   getProductTags(@GetUser() user: Payload) {
-    return this.productsService.getProductTags(user.id);
+    return this.productsService.getRecomendations(user.id);
   }
 
   @Patch('/status/:id')

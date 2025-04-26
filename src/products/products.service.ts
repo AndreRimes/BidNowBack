@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductDto } from './dto/CreateProduct.dto';
 import { S3Service } from 'src/s3/s3.service';
 import { Status } from '@prisma/client';
+import axios from 'axios';
 
 const defaultInclude = {
   bids: {
@@ -201,26 +202,30 @@ export class ProductsService {
     });
   }
 
-  async getProductTags(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      include: { tags: true },
-    });
+  async getRecomendations(userId: string) {
+    const { data } = await axios.get(`${ process.env.RECOMMENDATION_MICROSERVICE_URL}/${userId}`);
+    const recommendedTags = data.recommendations.map((tag) => tag.id);
 
-    if (!user) {
-      throw new Error(`User with ID ${userId} not found.`);
-    }
-
-    const userTagIds = user.tags.map((tag) => tag.id);
-
-    const products = await this.prisma.product.findMany({
+    return await this.prisma.product.findMany({
       where: {
         tags: {
-          some: { id: { in: userTagIds } },
+          some: {
+            id: {
+              in: recommendedTags,
+            },
+          },
+        },
+        status: Status.ACTIVE,
+        userId: {
+          not: userId, 
+        },
+        bids: {
+          none: {
+            userId: userId, 
+          },
         },
       },
       include: defaultInclude,
     });
-    return products;
   }
 }
