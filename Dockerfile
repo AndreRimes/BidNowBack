@@ -26,10 +26,12 @@ COPY --chown=node:node prisma ./prisma
 COPY --from=builder --chown=node:node /home/node/package*.json ./
 COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
 COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
+COPY --chown=node:node entrypoint.sh ./entrypoint.sh
+
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8081 3334
 
-
 ENV PORT 8081
 
-CMD ["sh", "-c", "npm run start:prod"]
+ENTRYPOINT ["./entrypoint.sh"]
