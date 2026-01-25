@@ -1,3 +1,5 @@
+import { UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import {
   ConnectedSocket,
   MessageBody,
@@ -5,13 +7,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Payload } from 'src/auth/auth.service';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Socket, Server } from 'socket.io';
-import { JwtService } from '@nestjs/jwt';
-import { WebSocketGuard } from 'src/auth/guard/web-socket.guard';
-import { UseGuards } from '@nestjs/common';
 import { Status } from '@prisma/client';
+import { Server, Socket } from 'socket.io';
+import { Payload } from 'src/auth/auth.service';
+import { WebSocketGuard } from 'src/auth/guard/web-socket.guard';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export type BidDto = {
   productId: string;
@@ -22,6 +22,8 @@ export type BidDto = {
   cors: { credentials: true, allowedHeaders: true, origin: true },
   cookie: true,
   namespace: '/ws',
+  path: '/socket.io/',
+  transports: ['websocket', 'polling'],
 })
 @UseGuards(WebSocketGuard)
 export class BidGateway {
