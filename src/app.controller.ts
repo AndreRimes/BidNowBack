@@ -9,7 +9,7 @@ export class AppController {
   @Get()
   @Public()
   getHello(): string {
-    return 'AAAAAAAAAAAAAAA';
+    return 'AAAAAAAAAAAAAAAb';
     // return this.appService.getHello();
   }
 
